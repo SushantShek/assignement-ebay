@@ -1,6 +1,6 @@
 package com.example.application.utils;
 
-public class StringUtils {
+public class UtilsForString {
 
     private static final String REGEX = "^\"|\"$";
     /**

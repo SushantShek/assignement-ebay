@@ -33,7 +33,7 @@ public class PNRFileReader implements ReaderInterface {
     }
 
     @Override
-    public List<CreditInput> readFile(InputStream tempFile) throws IOException {
+    public List<CreditInput> readFile(InputStream tempFile) {
         return processPNRInputFile(tempFile).stream().skip(1).map(mapToCredit).collect(Collectors.toList());
     }
 
@@ -42,8 +42,10 @@ public class PNRFileReader implements ReaderInterface {
      * for the input to {@link CreditInput} class
      */
     private final Function<String, CreditInput> mapToCredit = (line) -> {
-        String[] p = line.split(STRING_DELIM);// PRN has colon separated lines
-
+        String[] p = line.split(STRING_DELIM);// PRN has semicolon separated lines
+        if(p.length < 6){
+            throw new IllegalArgumentException("Expected mapping parameters are missing");
+        }
         CreditInput item = new CreditInput();
         item.setName(p[0]);//<-- this is the first column in the prn file
         item.setAddress(p[1]);
@@ -83,6 +85,7 @@ public class PNRFileReader implements ReaderInterface {
                 // Method called with supplied file data line and the widths of
                 // each column as outlined within the file.
                 String[] parts = splitStringToChunks(line, 16, 22, 9, 14, 13, 8);
+
                 for (String str : parts) {
                     sb.append(sb.toString().equals("") ? str : "; " + str);
                 }
@@ -103,12 +106,16 @@ public class PNRFileReader implements ReaderInterface {
      */
     private static String[] splitStringToChunks(String inputString, int... chunkSizes) {
         List<String> list = new ArrayList<>();
-        int chunkStart, chunkEnd = 0;
-        for (int length : chunkSizes) {
-            chunkStart = chunkEnd;
-            chunkEnd = chunkStart + length;
-            String dataChunk = inputString.substring(chunkStart, chunkEnd);
-            list.add(dataChunk.trim());
+        try {
+            int chunkStart, chunkEnd = 0;
+            for (int length : chunkSizes) {
+                chunkStart = chunkEnd;
+                chunkEnd = chunkStart + length;
+                String dataChunk = inputString.substring(chunkStart, chunkEnd);
+                list.add(dataChunk.trim());
+            }
+        }catch(StringIndexOutOfBoundsException ex){
+            throw new IllegalArgumentException("Expected mapping parameters are missing");
         }
         return list.toArray(new String[0]);
     }

@@ -3,7 +3,7 @@ package com.example.application.business.reader;
 import com.example.application.business.FileRegister;
 import com.example.application.business.ReaderInterface;
 import com.example.application.domain.CreditInput;
-import com.example.application.utils.StringUtils;
+import com.example.application.utils.UtilsForString;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -14,6 +14,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.IllegalFormatCodePointException;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -35,7 +36,7 @@ public class CSVFileReader implements ReaderInterface {
     }
 
     @Override
-    public List<CreditInput> readFile(InputStream tempFile) throws JsonProcessingException {
+    public List<CreditInput> readFile(InputStream tempFile) {
         return processCSVInputFile(tempFile);
     }
     /**
@@ -45,9 +46,12 @@ public class CSVFileReader implements ReaderInterface {
     private final Function<String, CreditInput> mapToItem = (line) -> {
 
         String[] p = line.split(DILIM_CSV);// a CSV has comma separated lines
+        if(p.length < 6){
+            throw new IllegalArgumentException("Expected mapping parameters are missing");
+        }
 
         CreditInput input = new CreditInput();
-        input.setName(StringUtils.removeQuotes(p[0] + "," + p[1]));//<-- this is the first column in the csv file
+        input.setName(UtilsForString.removeQuotes(p[0] + "," + p[1]));//<-- this is the first column in the csv file
         input.setAddress(p[2]);
         input.setPostCode(p[3]);
         if (p[4] != null && p[4].trim().length() > 0) {
