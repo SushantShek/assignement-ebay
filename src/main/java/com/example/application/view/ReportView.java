@@ -18,6 +18,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Route("")
 public class ReportView extends VerticalLayout {
@@ -60,12 +61,9 @@ public class ReportView extends VerticalLayout {
                 grid.addColumn(row -> row[colIndex])
                         .setHeader(SharedUtil.camelCaseToHumanFriendly(list.get(colIndex).getName()));
             }
-            List<String[]> strArr = new ArrayList<>();
-            for (CreditInput ci : entries) {
-                String[] str = {ci.getName(), ci.getAddress(), ci.getPostCode(),
-                        ci.getPhoneNumber(), ci.getCreditLimit(), ci.getBirthDate()};
-                strArr.add(str);
-            }
+            List<String[]> strArr = entries.stream()
+                    .map(ci -> new String[]{ci.getName(), ci.getAddress(), ci.getPostCode(),
+                    ci.getPhoneNumber(), ci.getCreditLimit(), ci.getBirthDate()}).collect(Collectors.toList());
             grid.setItems(strArr);
         } catch (IOException | CsvException e) {
             e.printStackTrace();

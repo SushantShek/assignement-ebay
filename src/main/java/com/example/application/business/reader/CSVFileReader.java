@@ -27,9 +27,9 @@ public class CSVFileReader implements ReaderInterface {
      */
     private static final String DELIM_CSV = ",";
 
-    /**
-     * This block registers the filetype to FileRegister
-     * which helps to decide based on input file which class to process it with.
+    /*
+      This block registers the filetype to FileRegister
+      which helps to decide based on input file which class to process it with.
      */
     static {
         FileRegister.register("csv", new CSVFileReader());
@@ -80,8 +80,6 @@ public class CSVFileReader implements ReaderInterface {
      * @return List of String
      */
     private List<CreditInput> processCSVInputFile(InputStream inputFilePath) throws CsvException {
-        List<CreditInput> inputList = new ArrayList<>();
-
         try (BufferedReader br = new BufferedReader(new InputStreamReader(inputFilePath, StandardCharsets.ISO_8859_1))) {
             // skip the header of the csv
             return br.lines().skip(1)

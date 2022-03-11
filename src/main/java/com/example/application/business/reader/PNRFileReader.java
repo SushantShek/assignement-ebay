@@ -10,7 +10,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
@@ -24,9 +24,9 @@ public class PNRFileReader implements ReaderInterface {
      */
     private static final String STRING_DELIM = ";";
 
-    /**
-     * This block registers the filetype to FileRegister
-     * which helps to decide based on input file which class to process it with.
+    /*
+      This block registers the filetype to FileRegister
+      which helps to decide based on input file which class to process it with.
      */
     static {
         FileRegister.register("prn", new PNRFileReader());
@@ -44,7 +44,7 @@ public class PNRFileReader implements ReaderInterface {
      */
     private final Function<String, CreditInput> mapToCredit = (line) -> {
         String[] p = line.split(STRING_DELIM);// PRN has semicolon separated lines
-        if(p.length < 6){
+        if (p.length < 6) {
             log.error("PNRFileReader input has incorrect delimiter");
             throw new IllegalArgumentException("Expected mapping parameters are missing");
         }
@@ -70,13 +70,14 @@ public class PNRFileReader implements ReaderInterface {
      * Function to read the input stream coming from file upload
      * Parse it line by line and apply custom processing based of file
      * and data type
+     *
      * @param inputFilePath {@link InputStream} file IO
      * @return List of String
      */
     private List<String> processPNRInputFile(InputStream inputFilePath) {
         List<String> prnList = new ArrayList<>();
         try (
-                BufferedReader br = new BufferedReader(new InputStreamReader(inputFilePath))) {
+                BufferedReader br = new BufferedReader(new InputStreamReader(inputFilePath, Charset.forName("ISO-8859-16")))) {
             String line;
             StringBuilder sb;
             while ((line = br.readLine()) != null) {
@@ -94,7 +95,6 @@ public class PNRFileReader implements ReaderInterface {
                 prnList.add(sb.toString());
             }
         } catch (IOException ex) {
-            log.error("Exception in processPNRInputFile");
             log.error("Exception in processPNRInputFile ", ex);
         }
         return prnList;
@@ -103,8 +103,9 @@ public class PNRFileReader implements ReaderInterface {
     /**
      * Creating chunks of input line String based on the size of
      * space between the strings
+     *
      * @param inputString String line input
-     * @param chunkSizes size of spaces between lines
+     * @param chunkSizes  size of spaces between lines
      * @return Array of String
      */
     private static String[] splitStringToChunks(String inputString, int... chunkSizes) {
@@ -117,7 +118,7 @@ public class PNRFileReader implements ReaderInterface {
                 String dataChunk = inputString.substring(chunkStart, chunkEnd);
                 list.add(dataChunk.trim());
             }
-        }catch(StringIndexOutOfBoundsException ex){
+        } catch (StringIndexOutOfBoundsException ex) {
             log.error("Format of input message is not as expected");
             throw new IllegalArgumentException("Expected mapping parameters are missing");
         }
