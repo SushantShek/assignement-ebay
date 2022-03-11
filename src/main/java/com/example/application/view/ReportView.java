@@ -38,6 +38,13 @@ public class ReportView extends VerticalLayout {
         add(upload, grid);
     }
 
+    /**
+     * Render the view on Vaadin based on the processed output
+     *
+     * @param resourceAsStream Input file as Stream
+     * @param ext File Extension to find the responsible implementation class
+     * @throws JsonProcessingException if an Exception is Thrown
+     */
     private void renderDisplay(InputStream resourceAsStream, String ext) throws JsonProcessingException {
         ReaderInterface fileReader = FileRegister.getClass(ext);
 

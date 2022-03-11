@@ -10,6 +10,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
@@ -18,7 +19,15 @@ import java.util.stream.Collectors;
 @Slf4j
 @Component
 public class PNRFileReader implements ReaderInterface {
+    /**
+     * Delimiter for PNR file
+     */
     private static final String STRING_DELIM = ";";
+
+    /**
+     * This block registers the filetype to FileRegister
+     * which helps to decide based on input file which class to process it with.
+     */
     static {
         FileRegister.register("prn", new PNRFileReader());
     }
@@ -28,12 +37,15 @@ public class PNRFileReader implements ReaderInterface {
         return processPNRInputFile(tempFile).stream().skip(1).map(mapToCredit).collect(Collectors.toList());
     }
 
+    /**
+     * Function to validate the data and create mapping
+     * for the input to {@link CreditInput} class
+     */
     private final Function<String, CreditInput> mapToCredit = (line) -> {
+        String[] p = line.split(STRING_DELIM);// PRN has colon separated lines
 
-        String[] p = line.split(STRING_DELIM);// a CSV has comma separated lines
         CreditInput item = new CreditInput();
-
-        item.setName(p[0]);//<-- this is the first column in the csv file
+        item.setName(p[0]);//<-- this is the first column in the prn file
         item.setAddress(p[1]);
         item.setPostCode(p[2]);
         if (p[3] != null && p[3].trim().length() > 0) {
@@ -50,6 +62,13 @@ public class PNRFileReader implements ReaderInterface {
         return item;
     };
 
+    /**
+     * Function to read the input stream coming from file upload
+     * Parse it line by line and apply custom processing based of file
+     * and data type
+     * @param inputFilePath {@link InputStream} file IO
+     * @return List of String
+     */
     private List<String> processPNRInputFile(InputStream inputFilePath) {
         List<String> prnList = new ArrayList<>();
         try (
@@ -70,11 +89,18 @@ public class PNRFileReader implements ReaderInterface {
                 prnList.add(sb.toString());
             }
         } catch (IOException ex) {
-            log.error("Exceprion in processPNRInputFile ", ex);
+            log.error("Exception in processPNRInputFile ", ex);
         }
         return prnList;
     }
 
+    /**
+     * Creating chunks of input line String based on the size of
+     * space between the strings
+     * @param inputString String line input
+     * @param chunkSizes size of spaces between lines
+     * @return Array of String
+     */
     private static String[] splitStringToChunks(String inputString, int... chunkSizes) {
         List<String> list = new ArrayList<>();
         int chunkStart, chunkEnd = 0;

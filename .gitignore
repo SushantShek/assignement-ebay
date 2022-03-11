@@ -18,18 +18,12 @@
 *.zip
 *.tar.gz
 *.rar
+*.iml
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
+target/
 
-Skip to content
-Search or jump to…
-Pull requests
-Issues
-Marketplace
-Explore
- 
-@SushantShek 
 angular
 /
 angular
@@ -48,12 +42,6 @@ Insights
 angular/.gitignore
 @devversion
 devversion ci: fix stamping for builds performed in CI (#45147)
-…
-Latest commit e56472d 19 days ago
- History
- 33 contributors
-@alexeagle@mhevery@gkalpak@IgorMinar@devversion@tbosch@vsavkin@josephperrott@uraj@petebacondarwin@ocombe@zarend
-58 lines (46 sloc)  915 Bytes
    
 .DS_STORE
 
@@ -113,15 +101,3 @@ baseline.json
 
 # Husky
 .husky/_
-© 2022 GitHub, Inc.
-Terms
-Privacy
-Security
-Status
-Docs
-Contact GitHub
-Pricing
-API
-Training
-Blog
-About
