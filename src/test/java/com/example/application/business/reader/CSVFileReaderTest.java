@@ -2,6 +2,7 @@ package com.example.application.business.reader;
 
 import com.example.application.domain.CreditInput;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.opencsv.exceptions.CsvException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,7 +32,7 @@ class CSVFileReaderTest {
     }
 
     @Test
-    void readFile(){
+    void readFile() throws CsvException {
         List<CreditInput> output = reader.readFile(targetStream);
         assertNotNull(output);
         assertTrue(output.size() == 1);

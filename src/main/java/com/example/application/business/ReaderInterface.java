@@ -1,6 +1,7 @@
 package com.example.application.business;
 
 import com.example.application.domain.CreditInput;
+import com.opencsv.exceptions.CsvException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,5 +19,5 @@ public interface ReaderInterface {
      * @return List of {@link CreditInput} class object
      * @throws IOException is thrown in case of Exception
      */
-    List<CreditInput> readFile(InputStream tempFile) throws IOException;
+    List<CreditInput> readFile(InputStream tempFile) throws IOException, CsvException;
 }

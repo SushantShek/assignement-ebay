@@ -4,6 +4,7 @@ import com.example.application.business.FileRegister;
 import com.example.application.business.ReaderInterface;
 import com.example.application.domain.CreditInput;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.opencsv.exceptions.CsvException;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.upload.Upload;
@@ -66,7 +67,7 @@ public class ReportView extends VerticalLayout {
                 strArr.add(str);
             }
             grid.setItems(strArr);
-        } catch (IOException e) {
+        } catch (IOException | CsvException e) {
             e.printStackTrace();
         }
     }

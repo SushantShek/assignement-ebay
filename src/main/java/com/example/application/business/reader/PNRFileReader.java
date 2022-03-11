@@ -34,6 +34,7 @@ public class PNRFileReader implements ReaderInterface {
 
     @Override
     public List<CreditInput> readFile(InputStream tempFile) {
+        log.info("calling read file PNR");
         return processPNRInputFile(tempFile).stream().skip(1).map(mapToCredit).collect(Collectors.toList());
     }
 
@@ -44,6 +45,7 @@ public class PNRFileReader implements ReaderInterface {
     private final Function<String, CreditInput> mapToCredit = (line) -> {
         String[] p = line.split(STRING_DELIM);// PRN has semicolon separated lines
         if(p.length < 6){
+            log.error("PNRFileReader input has incorrect delimiter");
             throw new IllegalArgumentException("Expected mapping parameters are missing");
         }
         CreditInput item = new CreditInput();
@@ -92,6 +94,7 @@ public class PNRFileReader implements ReaderInterface {
                 prnList.add(sb.toString());
             }
         } catch (IOException ex) {
+            log.error("Exception in processPNRInputFile");
             log.error("Exception in processPNRInputFile ", ex);
         }
         return prnList;
@@ -115,6 +118,7 @@ public class PNRFileReader implements ReaderInterface {
                 list.add(dataChunk.trim());
             }
         }catch(StringIndexOutOfBoundsException ex){
+            log.error("Format of input message is not as expected");
             throw new IllegalArgumentException("Expected mapping parameters are missing");
         }
         return list.toArray(new String[0]);
