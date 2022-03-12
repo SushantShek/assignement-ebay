@@ -1,11 +1,11 @@
 package com.example.application.business.reader;
 
-import com.example.application.business.FileRegister;
 import com.example.application.business.ReaderInterface;
 import com.example.application.domain.CreditInput;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import javax.validation.Valid;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,19 +18,11 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Component
-public class PNRFileReader implements ReaderInterface {
+public class PRNFileReader implements ReaderInterface {
     /**
      * Delimiter for PNR file
      */
     private static final String STRING_DELIM = ";";
-
-    /*
-      This block registers the filetype to FileRegister
-      which helps to decide based on input file which class to process it with.
-     */
-    static {
-        FileRegister.register("prn", new PNRFileReader());
-    }
 
     @Override
     public List<CreditInput> readFile(InputStream tempFile) {
@@ -48,6 +40,7 @@ public class PNRFileReader implements ReaderInterface {
             log.error("PNRFileReader input has incorrect delimiter");
             throw new IllegalArgumentException("Expected mapping parameters are missing");
         }
+        @Valid
         CreditInput item = new CreditInput();
         item.setName(p[0]);//<-- this is the first column in the prn file
         item.setAddress(p[1]);

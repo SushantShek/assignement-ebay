@@ -1,6 +1,5 @@
 package com.example.application.business.reader;
 
-import com.example.application.business.FileRegister;
 import com.example.application.business.ReaderInterface;
 import com.example.application.domain.CreditInput;
 import com.example.application.utils.UtilsForString;
@@ -8,12 +7,12 @@ import com.opencsv.exceptions.CsvException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import javax.validation.Valid;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -26,14 +25,6 @@ public class CSVFileReader implements ReaderInterface {
      * Delimiter for CSV file
      */
     private static final String DELIM_CSV = ",";
-
-    /*
-      This block registers the filetype to FileRegister
-      which helps to decide based on input file which class to process it with.
-     */
-    static {
-        FileRegister.register("csv", new CSVFileReader());
-    }
 
     @Override
     public List<CreditInput> readFile(InputStream tempFile) throws CsvException {
@@ -53,6 +44,7 @@ public class CSVFileReader implements ReaderInterface {
             throw new IllegalArgumentException("Expected mapping parameters are missing");
         }
 
+        @Valid
         CreditInput input = new CreditInput();
         input.setName(UtilsForString.removeQuotes(p[0] + "," + p[1]));//<-- this is the first column in the csv file
         input.setAddress(p[2]);

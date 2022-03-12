@@ -14,7 +14,7 @@ import java.util.List;
 public interface ReaderInterface {
     /**
      * Only readFile method is exposed for all file type.
-     * This is where actuall business logic is called
+     * This is where actually business logic is called
      * @param tempFile {@link InputStream} for the uploaded file
      * @return List of {@link CreditInput} class object
      * @throws IOException is thrown in case of Exception

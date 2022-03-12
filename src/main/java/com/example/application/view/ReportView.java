@@ -1,8 +1,9 @@
 package com.example.application.view;
 
-import com.example.application.business.FileRegister;
+import com.example.application.factory.FileRegister;
 import com.example.application.business.ReaderInterface;
 import com.example.application.domain.CreditInput;
+import com.example.application.factory.AbstractFactory;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.opencsv.exceptions.CsvException;
 import com.vaadin.flow.component.grid.Grid;
@@ -48,12 +49,12 @@ public class ReportView extends VerticalLayout {
      * @throws JsonProcessingException if an Exception is Thrown
      */
     private void renderDisplay(InputStream resourceAsStream, String ext) throws JsonProcessingException {
-        ReaderInterface fileReader = FileRegister.getClass(ext);
+        AbstractFactory factory = new FileRegister();//FileRegister.getClass(ext);
+        ReaderInterface fileReader = (ReaderInterface) factory.create(ext);
 
         try {
             List<CreditInput> entries = fileReader.readFile(resourceAsStream);
             List<Field> list = new ArrayList<>(Arrays.asList(CreditInput.class.getDeclaredFields()));
-            list = list.subList(1, list.size());
             grid.removeAllColumns();
 
             for (int i = 0; i < list.size(); i++) {

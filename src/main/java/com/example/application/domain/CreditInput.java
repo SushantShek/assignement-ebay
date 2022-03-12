@@ -5,24 +5,30 @@ import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
-@Slf4j
-@NoArgsConstructor
-@Component
 @Data
+@Component
+@NoArgsConstructor
+
 public class CreditInput {
 
-    @NotNull
+    @NotBlank(message = "Name is mandatory")
     private String name;
-    @NotNull
+    @NotBlank(message = "Address is mandatory")
     private String address;
-    @NotNull
+    @Size(min = 4, max = 7)
+    @NotBlank(message = "Postcode is mandatory")
     private String postCode;
-    @NotNull
+    @Size(min = 10, max = 15)
+    @NotBlank(message = "Phone number is mandatory")
     private String phoneNumber;
-    @NotNull
+    @Size(min =1)
+    @NotBlank(message = "Credit Limit is mandatory")
     private String creditLimit;
-    @NotNull
+    @Size(min = 8, max = 10)
+    @NotBlank(message = "Birth date is mandatory")
     private String birthDate;
 }
